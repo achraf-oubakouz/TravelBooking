@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block title %}Inscription - TravelBooking{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Créer un compte</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="{{ user_form.username.id_for_label }}" class="form-label">Nom d'utilisateur</label>
+                            <input type="text" class="form-control {% if user_form.username.errors %}is-invalid{% endif %}" id="{{ user_form.username.id_for_label }}" name="{{ user_form.username.html_name }}" value="{{ user_form.username.value|default:'' }}">
+                            {% if user_form.username.errors %}
+                            <div class="invalid-feedback">
+                                {{ user_form.username.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ user_form.email.id_for_label }}" class="form-label">Email</label>
+                            <input type="email" class="form-control {% if user_form.email.errors %}is-invalid{% endif %}" id="{{ user_form.email.id_for_label }}" name="{{ user_form.email.html_name }}" value="{{ user_form.email.value|default:'' }}">
+                            {% if user_form.email.errors %}
+                            <div class="invalid-feedback">
+                                {{ user_form.email.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ user_form.password1.id_for_label }}" class="form-label">Mot de passe</label>
+                            <input type="password" class="form-control {% if user_form.password1.errors %}is-invalid{% endif %}" id="{{ user_form.password1.id_for_label }}" name="{{ user_form.password1.html_name }}">
+                            {% if user_form.password1.errors %}
+                            <div class="invalid-feedback">
+                                {{ user_form.password1.errors }}
+                            </div>
+                            {% else %}
+                            <div class="form-text">
+                                <small>Votre mot de passe doit contenir au moins 8 caractères et ne peut pas être entièrement numérique.</small>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ user_form.password2.id_for_label }}" class="form-label">Confirmer le mot de passe</label>
+                            <input type="password" class="form-control {% if user_form.password2.errors %}is-invalid{% endif %}" id="{{ user_form.password2.id_for_label }}" name="{{ user_form.password2.html_name }}">
+                            {% if user_form.password2.errors %}
+                            <div class="invalid-feedback">
+                                {{ user_form.password2.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <hr>
+                        <h5>Profil voyageur</h5>
+                        
+                        <div class="mb-3">
+                            <label for="{{ profile_form.preferences.id_for_label }}" class="form-label">Préférences de voyage</label>
+                            <textarea class="form-control {% if profile_form.preferences.errors %}is-invalid{% endif %}" id="{{ profile_form.preferences.id_for_label }}" name="{{ profile_form.preferences.html_name }}" rows="3">{{ profile_form.preferences.value|default:'' }}</textarea>
+                            {% if profile_form.preferences.errors %}
+                            <div class="invalid-feedback">
+                                {{ profile_form.preferences.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="{{ profile_form.documents.id_for_label }}" class="form-label">Documents</label>
+                            <textarea class="form-control {% if profile_form.documents.errors %}is-invalid{% endif %}" id="{{ profile_form.documents.id_for_label }}" name="{{ profile_form.documents.html_name }}" rows="3">{{ profile_form.documents.value|default:'' }}</textarea>
+                            {% if profile_form.documents.errors %}
+                            <div class="invalid-feedback">
+                                {{ profile_form.documents.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-user-plus me-2"></i>S'inscrire
+                            </button>
+                            <a href="{% url 'login' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-sign-in-alt me-2"></i>Déjà inscrit ? Se connecter
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

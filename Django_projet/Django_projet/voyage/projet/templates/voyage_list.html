@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block title %}Nos Voyages - TravelBooking{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Découvrez nos voyages</h1>
+    
+    <!-- Search and Filters -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <form method="get" action="{% url 'voyage_list' %}">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label for="q" class="form-label">Recherche</label>
+                        <input type="text" class="form-control" id="q" name="q" value="{{ query }}" placeholder="Rechercher...">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="destination" class="form-label">Destination</label>
+                        <select class="form-select" id="destination" name="destination">
+                            <option value="">Toutes les destinations</option>
+                            {% for dest in destinations %}
+                            <option value="{{ dest }}" {% if destination == dest %}selected{% endif %}>{{ dest }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="duree" class="form-label">Durée (jours)</label>
+                        <div class="row">
+                            <div class="col-6">
+                                <input type="number" class="form-control" id="duree_min" name="duree_min" value="{{ duree_min }}" placeholder="Min">
+                            </div>
+                            <div class="col-6">
+                                <input type="number" class="form-control" id="duree_max" name="duree_max" value="{{ duree_max }}" placeholder="Max">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="prix" class="form-label">Prix (DH)</label>
+                        <div class="row">
+                            <div class="col-6">
+                                <input type="number" class="form-control" id="prix_min" name="prix_min" value="{{ prix_min }}" placeholder="Min">
+                            </div>
+                            <div class="col-6">
+                                <input type="number" class="form-control" id="prix_max" name="prix_max" value="{{ prix_max }}" placeholder="Max">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-search me-2"></i>Filtrer
+                        </button>
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <a href="{% url 'voyage_list' %}" class="btn btn-outline-secondary w-100">
+                            <i class="fas fa-redo me-2"></i>Réinitialiser
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Results -->
+    <div class="row">
+        {% for voyage in voyages %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                {% if voyage.photo %}
+                <img src="{{ voyage.photo.url }}" class="card-img-top" alt="{{ voyage.titre }}">
+                {% else %}
+                <img src="https://via.placeholder.com/300x200?text=Voyage" class="card-img-top" alt="{{ voyage.titre }}">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ voyage.titre }}</h5>
+                    <p class="card-text text-muted">
+                        <i class="fas fa-map-marker-alt me-1"></i>{{ voyage.destination }}
+                    </p>
+                    <p class="card-text">{{ voyage.description|truncatewords:20 }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="h5 text-primary">{{ voyage.prix_base }} DH</span>
+                        <span class="text-muted"><i class="fas fa-clock me-1"></i>{{ voyage.duree }} jours</span>
+                    </div>
+                </div>
+                <div class="card-footer bg-white border-top-0">
+                    <a href="{% url 'voyage_detail' voyage.id %}" class="btn btn-outline-primary w-100">
+                        Voir les détails
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <i class="fas fa-search fa-3x text-muted mb-3"></i>
+            <h3>Aucun voyage ne correspond à votre recherche</h3>
+            <p>Essayez de modifier vos critères de recherche.</p>
+            <a href="{% url 'voyage_list' %}" class="btn btn-primary mt-3">
+                Voir tous les voyages
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

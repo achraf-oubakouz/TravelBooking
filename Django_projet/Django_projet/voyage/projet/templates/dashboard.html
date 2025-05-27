@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+
+{% block title %}Tableau de bord - Administration{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Tableau de bord administrateur</h1>
+    
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-4">
+            <div class="card bg-primary text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase">Voyages</h6>
+                            <h2 class="mb-0">{{ total_voyages }}</h2>
+                        </div>
+                        <i class="fas fa-plane fa-3x opacity-50"></i>
+                    </div>
+                </div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a href="{% url 'admin:projet_voyage_changelist' %}" class="text-white text-decoration-none">
+                        Voir détails
+                    </a>
+                    <i class="fas fa-angle-right text-white"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-4">
+            <div class="card bg-success text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase">Réservations</h6>
+                            <h2 class="mb-0">{{ total_reservations }}</h2>
+                        </div>
+                        <i class="fas fa-calendar-check fa-3x opacity-50"></i>
+                    </div>
+                </div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a href="{% url 'admin:projet_reservation_changelist' %}" class="text-white text-decoration-none">
+                        Voir détails
+                    </a>
+                    <i class="fas fa-angle-right text-white"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-4">
+            <div class="card bg-warning text-dark h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase">En attente</h6>
+                            <h2 class="mb-0">{{ paiements_en_attente }}</h2>
+                        </div>
+                        <i class="fas fa-clock fa-3x opacity-50"></i>
+                    </div>
+                </div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a href="{% url 'admin:projet_paiement_changelist' %}?etat__exact=en_attente" class="text-dark text-decoration-none">
+                        Voir détails
+                    </a>
+                    <i class="fas fa-angle-right text-dark"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-4">
+            <div class="card bg-info text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase">Chiffre d'affaires</h6>
+                            <h2 class="mb-0">{{ chiffre_affaires }} DH</h2>
+                        </div>
+                        <i class="fas fa-euro-sign fa-3x opacity-50"></i>
+                    </div>
+                </div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a href="{% url 'admin:projet_paiement_changelist' %}" class="text-white text-decoration-none">
+                        Voir détails
+                    </a>
+                    <i class="fas fa-angle-right text-white"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    <!-- Quick Links -->
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Actions rapides</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <a href="{% url 'admin:projet_voyage_add' %}" class="list-group-item list-group-item-action d-flex align-items-center">
+                            <i class="fas fa-plus-circle me-3 text-success"></i>
+                            <div>
+                                <h6 class="mb-0">Ajouter un voyage</h6>
+                                <small class="text-muted">Créer une nouvelle offre de voyage</small>
+                            </div>
+                        </a>
+                        <a href="{% url 'admin:projet_option_add' %}" class="list-group-item list-group-item-action d-flex align-items-center">
+                            <i class="fas fa-tags me-3 text-warning"></i>
+                            <div>
+                                <h6 class="mb-0">Ajouter une option</h6>
+                                <small class="text-muted">Créer une nouvelle option pour un voyage</small>
+                            </div>
+                        </a>
+                        <a href="{% url 'admin:auth_user_add' %}" class="list-group-item list-group-item-action d-flex align-items-center">
+                            <i class="fas fa-user-plus me-3 text-info"></i>
+                            <div>
+                                <h6 class="mb-0">Ajouter un utilisateur</h6>
+                                <small class="text-muted">Créer un nouveau compte utilisateur</small>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Gestion</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <a href="{% url 'admin:projet_voyage_changelist' %}" class="list-group-item list-group-item-action d-flex align-items-center">
+                            <i class="fas fa-plane me-3 text-primary"></i>
+                            <div>
+                                <h6 class="mb-0">Gérer les voyages</h6>
+                                <small class="text-muted">Modifier ou supprimer des voyages</small>
+                            </div>
+                        </a>
+                        <a href="{% url 'admin:projet_reservation_changelist' %}" class="list-group-item list-group-item-action d-flex align-items-center">
+                            <i class="fas fa-calendar-check me-3 text-success"></i>
+                            <div>
+                                <h6 class="mb-0">Gérer les réservations</h6>
+                                <small class="text-muted">Voir et modifier les réservations</small>
+                            </div>
+                        </a>
+                        <a href="{% url 'admin:projet_paiement_changelist' %}" class="list-group-item list-group-item-action d-flex align-items-center">
+                            <i class="fas fa-credit-card me-3 text-danger"></i>
+                            <div>
+                                <h6 class="mb-0">Gérer les paiements</h6>
+                                <small class="text-muted">Voir et modifier les paiements</small>
+                            </div>
+                        </a>
+                        <a href="{% url 'admin:auth_user_changelist' %}" class="list-group-item list-group-item-action d-flex align-items-center">
+                            <i class="fas fa-users me-3 text-info"></i>
+                            <div>
+                                <h6 class="mb-0">Gérer les utilisateurs</h6>
+                                <small class="text-muted">Voir et modifier les comptes utilisateurs</small>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

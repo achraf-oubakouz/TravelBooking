@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+
+{% block title %}Paiement - TravelBooking{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Paiement de votre réservation</h1>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Informations de paiement</h5>
+                </div>
+                
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <label for="{{ form.mode.id_for_label }}" class="form-label">Mode de paiement</label>
+                            <!-- CORRECTION ICI: fields.mode.choices → mode.field.choices -->
+                            <select class="form-select" id="{{ form.mode.id_for_label }}" name="{{ form.mode.html_name }}">
+                                {% for value, text in form.mode.field.choices %}
+                                <option value="{{ value }}">{{ text }}</option>
+                                {% endfor %}
+                            </select>
+                            {% if form.mode.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.mode.errors }}
+                            </div>
+                            {% endif %}
+                        </div>PQY
+                        
+                        <div id="card-payment-form" class="mb-4">
+                            <div class="mb-3">
+                                <label for="card-number" class="form-label">Numéro de carte</label>
+                                <input type="text" class="form-control" id="card-number" placeholder="1234 5678 9012 3456">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="card-expiry" class="form-label">Date d'expiration</label>
+                                    <input type="text" class="form-control" id="card-expiry" placeholder="MM/AA">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="card-cvc" class="form-label">CVC</label>
+                                    <input type="text" class="form-control" id="card-cvc" placeholder="123">
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="card-name" class="form-label">Nom sur la carte</label>
+                                <input type="text" class="form-control" id="card-name" placeholder="John Doe">
+                            </div>
+                        </div>
+                        
+                        <div id="paypal-form" class="mb-4 d-none">
+                            <p class="alert alert-info">
+                                <i class="fab fa-paypal me-2"></i>
+                                Vous serez redirigé vers PayPal pour finaliser votre paiement.
+                            </p>
+                            <div class="mb-3">
+                                <label for="paypal-email" class="form-label">Adresse e-mail PayPal</label>
+                                <input type="email" class="form-control" id="paypal-email" name="paypal_email" placeholder="exemple@email.com" required>
+                            </div>
+                        </div>
+                        
+                        <div id="virement-form" class="mb-4 d-none">
+                            <p class="alert alert-info">
+                                <i class="fas fa-university me-2"></i>
+                                Veuillez effectuer un virement bancaire avec les informations suivantes:
+                            </p>
+                            <div class="card">
+                                <div class="card-body">
+                                    <p><strong>Bénéficiaire:</strong> TravelBooking SAS</p>
+                                    <p><strong>IBAN:</strong> FR76 1234 5678 9012 3456 7890 123</p>
+                                    <p><strong>BIC:</strong> ABCDEFGHIJK</p>
+                                    <p><strong>Référence:</strong> Réservation #{{ reservation.id }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                Confirmer le paiement
+                            </button>
+                            <a href="{% url 'reservation_create' reservation.voyage.id %}" class="btn btn-outline-secondary">
+                                Retour à la réservation
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card shadow-sm sticky-top" style="top: 20px; z-index: 1;">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Résumé de la commande</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex mb-4">
+                        {% if reservation.voyage.photo %}
+                        <img src="{{ reservation.voyage.photo.url }}" class="img-fluid rounded me-3" alt="{{ reservation.voyage.titre }}" style="width: 80px; height: 80px; object-fit: cover;">
+                        {% else %}
+                        <img src="https://via.placeholder.com/80?text=Voyage" class="img-fluid rounded me-3" alt="{{ reservation.voyage.titre }}">
+                        {% endif %}
+                        <div>
+                            <h6>{{ reservation.voyage.titre }}</h6>
+                            <p class="text-muted mb-0 small">
+                                <i class="fas fa-map-marker-alt me-1"></i>{{ reservation.voyage.destination }}
+                            </p>
+
+                            <p class="text-muted mb-0 small">
+                                <i class="fas fa-users me-1"></i>{{ reservation.nombre_personnes }} voyageur(s)
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Prix de base</span>
+                       
+                        <span>{{ reservation.voyage.prix_base }} Dh × {{ reservation.nombre_personnes }}</span>
+                    </div>
+                    
+                    {% for option in reservation.options.all %}
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>{{ option.nom }}</span>
+                        <span>{{ option.prix }} DH</span>
+                    </div>
+                    {% endfor %}
+                    
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <span class="h5">Total</span>
+                        <span class="h5">{{ reservation.total }} DH</span>
+                    </div>
+                </div>
+                <div class="card-footer bg-white text-center">
+                    <small class="text-muted">Annulation gratuite jusqu'à 48h avant le départ</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const modeSelect = document.getElementById('{{ form.mode.id_for_label }}');
+        const cardForm = document.getElementById('card-payment-form');
+        const paypalForm = document.getElementById('paypal-form');
+        const virementForm = document.getElementById('virement-form');
+        const paypalEmail = document.getElementById('paypal-email');
+
+        
+        function updatePaymentForm() {
+            const mode = modeSelect.value;
+            
+            // Hide all forms
+            cardForm.classList.add('d-none');
+            paypalForm.classList.add('d-none');
+            virementForm.classList.add('d-none');
+
+            // Remove required from paypal email by default
+            if (paypalEmail) paypalEmail.required = false;
+            
+            // Show selected form
+            if (mode === 'carte') {
+                cardForm.classList.remove('d-none');
+            } else if (mode === 'paypal') {
+                paypalForm.classList.remove('d-none');
+                if (paypalEmail) paypalEmail.required = true;
+
+            } else if (mode === 'virement') {
+                virementForm.classList.remove('d-none');
+            }
+        }
+        
+        // Initial update
+        updatePaymentForm();
+        
+        // Add event listener
+        modeSelect.addEventListener('change', updatePaymentForm);
+    });
+</script>
+{% endblock %}
+{% endblock %}

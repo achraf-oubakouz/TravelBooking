@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+
+{% block title %}Mon profil - TravelBooking{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Mon profil</h1>
+    
+    <div class="row">
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Informations personnelles</h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <div class="avatar-placeholder mb-3">
+                            <i class="fas fa-user fa-4x text-muted"></i>
+                        </div>
+                        <h5>{{ user.username }}</h5>
+                        <p class="text-muted mb-0">{{ user.email }}</p>
+                    </div>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.preferences.id_for_label }}" class="form-label">Préférences de voyage</label>
+                            <textarea class="form-control" id="{{ form.preferences.id_for_label }}" name="{{ form.preferences.html_name }}" rows="4">{{ form.preferences.value|default:'' }}</textarea>
+                            {% if form.preferences.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.preferences.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.documents.id_for_label }}" class="form-label">Documents</label>
+                            <textarea class="form-control" id="{{ form.documents.id_for_label }}" name="{{ form.documents.html_name }}" rows="4">{{ form.documents.value|default:'' }}</textarea>
+                            {% if form.documents.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.documents.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Enregistrer
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Mes réservations</h5>
+                </div>
+                <div class="card-body">
+                    {% if reservations %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Voyage</th>
+                                    <th>Date</th>
+                                    <th>Voyageurs</th>
+                                    <th>Total</th>
+                                    <th>Statut</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for reservation in reservations %}
+                                <tr>
+                                    <td>{{ reservation.id }}</td>
+                                    <td>{{ reservation.voyage.titre }}</td>
+                                    <td>{{ reservation.date_reservation }}</td>
+                                    <td>{{ reservation.nombre_personnes }}</td>
+                                    <td>{{ reservation.total }} DH</td>
+                                    <td>
+                                        {% if reservation.paiement.statut == 'en_attente' %}
+                                        <span class="badge bg-warning text-dark">En attente</span>
+                                        {% elif reservation.paiement.statut == 'effectué' %}
+                                        <span class="badge bg-success">Confirmée</span>
+                                        {% elif reservation.paiement.statut == 'annulee' %}
+                                        <span class="badge bg-danger">Annulée</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                Actions
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                {% if reservation.paiement.statut == 'en_attente' %}
+                                                <li>
+                                                    <a class="dropdown-item" href="{% url 'payment' reservation.id %}">
+                                                        <i class="fas fa-credit-card me-2"></i>Payer
+                                                    </a>
+                                                </li>
+                                                {% endif %}
+                                                
+                                                {% if reservation.paiement.statut == 'effectué' %}
+                                                <li>
+                                                    <a class="dropdown-item" href="{% url 'confirmation' reservation.id %}">
+                                                        <i class="fas fa-receipt me-2"></i>Voir confirmation
+                                                    </a>
+                                                </li>
+                                                {% endif %}
+                                            
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-calendar-alt fa-3x text-muted mb-3"></i>
+                        <h4>Aucune réservation</h4>
+                        <p>Vous n'avez pas encore effectué de réservation.</p>
+                        <a href="{% url 'voyage_list' %}" class="btn btn-primary mt-2">
+                            <i class="fas fa-search me-2"></i>Explorer les voyages
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

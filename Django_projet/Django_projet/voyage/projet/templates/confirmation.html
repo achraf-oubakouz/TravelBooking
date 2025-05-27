@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}Confirmation - TravelBooking{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-success shadow">
+                <div class="card-header bg-success text-white text-center py-4">
+                    <i class="fas fa-check-circle fa-3x mb-3"></i>
+                    <h3>Merci pour votre réservation !</h3>
+                </div>
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <p class="lead">Votre réservation a été confirmée et votre paiement a été traité avec succès.</p>
+                    </div>
+
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">Détails de la réservation</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-md-4 text-muted">Numéro de réservation:</div>
+                                <div class="col-md-8 fw-bold">{{ reservation.id }}</div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-4 text-muted">Nom du client:</div>
+                                <div class="col-md-8">{{ reservation.utilisateur.username }}</div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-4 text-muted">Voyage:</div>
+                                <div class="col-md-8">{{ reservation.voyage.titre }}</div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-4 text-muted">Destination:</div>
+                                <div class="col-md-8">{{ reservation.voyage.destination }}</div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-4 text-muted">Date de départ:</div>
+                                <div class="col-md-8">{{ reservation.voyage.date_depart }}</div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-4 text-muted">Durée:</div>
+                                <div class="col-md-8">{{ reservation.voyage.duree }} jours</div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-4 text-muted">Nombre de voyageurs:</div>
+                                <div class="col-md-8">{{ reservation.nombre_personnes }}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 text-muted">Montant total:</div>
+                                <div class="col-md-8 fw-bold">{{ reservation.total }} DH</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'home' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-home me-2"></i>Retour à l'accueil
+                        </a>
+                        <a href="{% url 'profile' %}" class="btn btn-primary">
+                            <i class="fas fa-user me-2"></i>Voir mes réservations
+                        </a>
+                        <a href="{% url 'reservation_pdf' reservation.id %}" class="btn btn-success">
+                             <i class="fas fa-file-pdf me-2"></i>Télécharger la confirmation en PDF
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

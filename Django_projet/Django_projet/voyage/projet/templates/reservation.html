@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %}Réservation - {{ voyage.titre }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Réserver votre voyage</h1>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Détails de la réservation</h5>
+                </div>
+                
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <label for="{{ form.nombre_personnes.id_for_label }}" class="form-label">Nombre de voyageurs</label>
+                            {{ form.nombre_personnes }}
+                            {% if form.nombre_personnes.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.nombre_personnes.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        {% if options %}
+                        <div class="mb-4">
+                            <h5 class="mb-3">Options disponibles</h5>
+                            {% for option in options %}
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" name="option_{{ option.id }}" id="option_{{ option.id }}">
+                                <label class="form-check-label d-flex justify-content-between" for="option_{{ option.id }}">
+                                    <div>
+                                        <span>{{ option.name }}</span>
+                                        <span class="text-muted d-block small">{{ option.description }}</span>
+                                    </div>
+                                    <span class="ms-3">{{ option.price }} DH</span>
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                Continuer vers le paiement
+                            </button>
+                            <a href="{% url 'voyage_detail' voyage.id %}" class="btn btn-outline-secondary">
+                                Retour aux détails du voyage
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card shadow-sm sticky-top" style="top: 20px; z-index: 1;">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Résumé du voyage</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex mb-4">
+                        {% if voyage.photo %}
+                        <img src="{{ voyage.photo.url }}" class="img-fluid rounded me-3" alt="{{ voyage.titre }}" style="width: 80px; height: 80px; object-fit: cover;">
+                        {% else %}
+                        <img src="https://via.placeholder.com/80?text=Voyage" class="img-fluid rounded me-3" alt="{{ voyage.titre }}">
+                        {% endif %}
+                        <div>
+                            <h6>{{ voyage.titre }}</h6>
+                            <p class="text-muted mb-0 small">
+                                <i class="fas fa-map-marker-alt me-1"></i>{{ voyage.destination }}
+                            </p>
+                            <p class="text-muted mb-0 small">
+                                <i class="fas fa-calendar-alt me-1"></i>{{ voyage.duree }} jours
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Prix de base</span>
+                        <span>{{ voyage.prix_base }} DH</span>
+                    </div>
+                    
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <span class="h5">Prix par personne</span>
+                        <span class="h5">{{ voyage.prix_base }} Dh</span>
+                    </div>
+                </div>
+                <div class="card-footer bg-white text-center">
+                    <small class="text-muted">Annulation gratuite jusqu'à 48h avant le départ</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
