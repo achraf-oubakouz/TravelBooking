@@ -38,7 +38,7 @@ pip install -r requirements.txt
 3. Configurer la base de données (MySQL) :
 
 ```sql
-CREATE DATABASE travelbooking_db;
+CREATE DATABASE voyage_db;
 ```
 
 4. Appliquer les migrations :
